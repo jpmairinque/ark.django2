@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from rest_framework import viewsets, generics
 import requests
-from .models import Empresa
+from .models import Company, Equipment
+from .serializer import CompanySerializer
 
 # Create your views here.
 
@@ -67,7 +68,7 @@ class Services:
 
         filtredRes = list(filter(checkType, companyDetail))
 
- 
+        print(filtredRes)
    
         return filtredRes
 
@@ -102,15 +103,61 @@ class Services:
                                    headers=self.header,
                                    data=data).json()
 
-    # def saveCompanies():
+    def saveCompanies(self):
 
-        
+        inDatabaseCompanies = Company.objects.all().values_list('id', flat=True)
 
+        for company in self.companyDetail:
+            if company['id'] not in inDatabaseCompanies:
+                Company.objects.create(
 
+                    id=company['id'],
+                    tipo=company['tipo'],
+                    nome=company['nome'],
+                    nome_fantasia=company['nome_fantasia'],
+                    superior=company['superior'],
+                    cnpj=company['cnpj'],
+                    observacoes=company['observacoes'],
+                    contato=company['contato'],
+                    email=company['email'],
+                    telefone1=company['telefone1'],
+                    ramal1=company['ramal1'],
+                    telefone2=company['telefone2'],
+                    ramal2=company['ramal2'],
+                    fax=company['fax'],
+                    cep=company['cep'],
+                    rua=company['rua'],
+                    numero=company['numero'],
+                    bairro=company['bairro'],
+                    cidade=company['cidade'],
+                    estado=company['estado'],
+
+                )
+
+    def saveEquipments(self):
+
+         inDatabaseEquipments = Equipment.objects.all().values_list('id', flat=True)
+
+         for equipment in self.equipments:
+            if equipment['id'] not in inDatabaseEquipments:
+                Equipment.objects.create(
+                    id=equipment['id'],
+                    fabricante=equipment['fabricante'],
+                    modelo=equipment['modelo'],
+                    patrimonio=equipment['patrimonio'],
+                    numero_serie=equipment['numero_serie'],
+                    proprietario=equipment['proprietario']['id']
+                )
+
+                
 def testview(request):
 
     a = Services('a@a.com','a')
 
+    print("saving to db")
+    a.saveCompanies()
+    print("saving equip to db")
+    a.saveEquipments()
 
     
      # a.getCompanyDetail()
@@ -120,4 +167,11 @@ def testview(request):
 def homeview(request):
 
     return render(request, 'loading.html')
+
+
+#######################################################################################
+
+class CompanyViewSet(viewsets.ModelViewSet):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
 
