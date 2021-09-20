@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, generics
 import requests
-
+from .models import Empresa
 
 # Create your views here.
 
@@ -14,13 +14,19 @@ class Services:
             "email": self.email,
             "password": self.password    
             }
+        print('Gerando token de autenticação')
         self.token = self.getAuthToken()
         self.header = {
             'Authorization': f'JWT {self.token}',
             }
+        print('Gerando empresas')
         self.companies = self.getAllCompanies()
+        print('Gerando detalhes das empresas')
         self.companyDetail = self.getCompanyDetail()
+        print('Gerando equipamentos')
         self.equipments = self.getEquipments()
+        print('Gerando chamados de equipamentos')
+        self.postChamado()
 
 
     baseApiEndpoint = 'https://desenvolvimento.arkmeds.com'
@@ -60,6 +66,8 @@ class Services:
                 return True
 
         filtredRes = list(filter(checkType, companyDetail))
+
+ 
    
         return filtredRes
 
@@ -69,22 +77,45 @@ class Services:
 
         for company in self.companyDetail:
             res = requests.request('GET', f"{self.baseApiEndpoint}/api/v2/equipamentos_paginados/?empresa_id={company['id']}", headers=self.header).json()
-
             if res['results']:
-                equipments.append(res)
-
-
-        print(equipments)        
+                for equipment in res['results']:
+                    equipments.append(equipment)
+               
+              
         return equipments
+
+    def postChamado(self):
+
+        for equipment in self.equipments:
+
+            data = {
+                "equipamento": equipment['id'],
+                "solicitante": equipment['proprietario']['id'], 
+                "tipo_servico": 3, 
+                "problema": 5,
+                "observacoes": "texto gerado aleatoriamente com até 100 palavras", 
+                "data_criacao": "1595446943974", 
+                "id_tipo_ordem_servico": 1
+            }
+            res = requests.request('POST',
+                                   f"{self.baseApiEndpoint}/api/v1/chamado/novo/",
+                                   headers=self.header,
+                                   data=data).json()
+
+    # def saveCompanies():
+
+        
 
 
 def testview(request):
 
     a = Services('a@a.com','a')
-    
-    # a.getCompanyDetail()
 
-    return render(request, 'bla.html', {'comp':a.companies})
+
+    
+     # a.getCompanyDetail()
+
+    return render(request, 'bla.html', {'comp':a.equipments})
 
 def homeview(request):
 
