@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, generics
 import requests
 from .models import Company, Equipment
-from .serializer import CompanySerializer
+from .serializer import CompanySerializer, EquipmentSerializer, CompanyEquipmentsSerializer
 
 # Create your views here.
 
@@ -44,7 +44,7 @@ class Services:
 
     def getAllCompanies(self):
  
-        res = requests.request('GET', f'{self.baseApiEndpoint}/api/v2/empresa/', headers=self.header).json()[:20]
+        res = requests.request('GET', f'{self.baseApiEndpoint}/api/v2/empresa/', headers=self.header).json()[:40]
         
         if res:
             return res        
@@ -174,4 +174,16 @@ def homeview(request):
 class CompanyViewSet(viewsets.ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
+
+class EquipmentViewSet(viewsets.ModelViewSet):
+    queryset = Equipment.objects.all()
+    serializer_class = EquipmentSerializer
+
+class CompanyEquipmentsViewSet(generics.ListAPIView):
+
+    def get_queryset(self):
+        queryset = Equipment.objects.filter(proprietario=self.kwargs['pk'])
+        return queryset
+    
+    serializer_class = CompanyEquipmentsSerializer
 
