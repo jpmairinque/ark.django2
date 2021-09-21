@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import viewsets, generics
 import requests
-from .models import Company, Equipment
-from .serializer import CompanySerializer, EquipmentSerializer, CompanyEquipmentsSerializer
+from .models import Chamado, Company, Equipment
+from .serializer import CompanySerializer, EquipmentSerializer, CompanyEquipmentsSerializer, ChamadoSerializer, EquipmentChamadosSerializer
 
 # Create your views here.
 
@@ -15,19 +15,20 @@ class Services:
             "email": self.email,
             "password": self.password    
             }
-        print('Gerando token de autenticação')
+        print('Gerando token de autenticação...')
         self.token = self.getAuthToken()
         self.header = {
             'Authorization': f'JWT {self.token}',
             }
-        print('Gerando empresas')
+        print('Gerando empresas...')
         self.companies = self.getAllCompanies()
-        print('Gerando detalhes das empresas')
+        print('Gerando detalhes das empresas...')
         self.companyDetail = self.getCompanyDetail()
-        print('Gerando equipamentos')
+        print('Gerando equipamentos...')
         self.equipments = self.getEquipments()
-        print('Gerando chamados de equipamentos')
+        print('Gerando chamados de equipamentos...')
         self.postChamado()
+        self.chamados = self.getChamados()
 
 
     baseApiEndpoint = 'https://desenvolvimento.arkmeds.com'
@@ -103,6 +104,17 @@ class Services:
                                    headers=self.header,
                                    data=data).json()
 
+    def getChamados(self):
+
+        chamados = []
+
+        for equipment in self.equipments:
+            res = requests.request('GET', f"{self.baseApiEndpoint}/api/v2/chamado/?equipamento_id={equipment['id']}", headers=self.header).json()
+            for chamado in res['results']:
+                    chamado['equipment_id'] = equipment['id']
+                    chamados.append(chamado)
+        return chamados
+
     def saveCompanies(self):
 
         inDatabaseCompanies = Company.objects.all().values_list('id', flat=True)
@@ -148,6 +160,19 @@ class Services:
                     numero_serie=equipment['numero_serie'],
                     proprietario=equipment['proprietario']['id']
                 )
+    
+    def saveChamados(self):
+
+         inDatabaseChamados = Chamado.objects.all().values_list('id', flat=True)
+
+         for chamado in self.chamados:
+            if chamado['id'] not in inDatabaseChamados:
+                Chamado.objects.create(
+                    id=chamado['id'],
+                    numero=chamado['numero'],
+                    equipamento_id=chamado['equipment_id'],
+                    responsavel_str=chamado['responsavel_str']
+                )
 
                 
 def testview(request):
@@ -158,7 +183,8 @@ def testview(request):
     a.saveCompanies()
     print("saving equip to db")
     a.saveEquipments()
-
+    print("saving chamados to db")
+    a.saveChamados()
     
      # a.getCompanyDetail()
 
@@ -179,6 +205,9 @@ class EquipmentViewSet(viewsets.ModelViewSet):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
 
+class ChamadoViewSet(viewsets.ModelViewSet):
+    queryset = Chamado.objects.all()
+    serializer_class = ChamadoSerializer
 class CompanyEquipmentsViewSet(generics.ListAPIView):
 
     def get_queryset(self):
@@ -186,4 +215,13 @@ class CompanyEquipmentsViewSet(generics.ListAPIView):
         return queryset
     
     serializer_class = CompanyEquipmentsSerializer
+
+
+class EquipmentChamadosViewSet(generics.ListAPIView):
+
+    def get_queryset(self):
+        queryset = Chamado.objects.filter(equipamento_id=self.kwargs['pk'])
+        return queryset
+    
+    serializer_class = EquipmentChamadosSerializer
 

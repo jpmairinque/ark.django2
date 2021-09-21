@@ -39,3 +39,14 @@ class Equipment(models.Model):
 
     def __str__(self):
         return self.modelo
+
+class Chamado(models.Model):
+    id = models.PositiveIntegerField(primary_key=True, editable=False)
+    numero = models.IntegerField(null=True)
+    equipamento_id = models.IntegerField()
+    responsavel_str = models.CharField(max_length=100, null=True)
+    
+   
+
+    def __str__(self):
+        return self.id
