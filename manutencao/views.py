@@ -29,6 +29,10 @@ class Services:
         print('Gerando chamados de equipamentos...')
         self.postChamado()
         self.chamados = self.getChamados()
+        self.inDatabaseEquipments = Equipment.objects.all().values_list('id', flat=True)
+        self.inDatabaseCompanies = Company.objects.all().values_list('id', flat=True)
+        self.inDatabaseChamados = Chamado.objects.all().values_list('id', flat=True)
+
 
 
     baseApiEndpoint = 'https://desenvolvimento.arkmeds.com'
@@ -45,7 +49,7 @@ class Services:
 
     def getAllCompanies(self):
  
-        res = requests.request('GET', f'{self.baseApiEndpoint}/api/v2/empresa/', headers=self.header).json()[:40]
+        res = requests.request('GET', f'{self.baseApiEndpoint}/api/v2/empresa/', headers=self.header).json()[500:1000]
         
         if res:
             return res        
@@ -55,10 +59,13 @@ class Services:
     def getCompanyDetail(self):
 
         companyDetail = []
-
+        i=0
         for company in self.companies:
+            i=i+1
+            print(f'Requeridas {i} empresas de 500')
             res = requests.request('GET', f"{self.baseApiEndpoint}/api/v2/company/{company['id']}", headers=self.header).json()
             companyDetail.append(res)
+           
 
 
         def checkType(company):
@@ -76,12 +83,14 @@ class Services:
     def getEquipments(self):
 
         equipments = []
+        i=0
 
         for company in self.companyDetail:
+            i = i+1
+            print(f'Requeridos {i} equipamentos de 500')
             res = requests.request('GET', f"{self.baseApiEndpoint}/api/v2/equipamentos_paginados/?empresa_id={company['id']}", headers=self.header).json()
-            if res['results']:
-                for equipment in res['results']:
-                    equipments.append(equipment)
+            for equipment in res['results']:
+                equipments.append(equipment)
                
               
         return equipments
@@ -107,20 +116,23 @@ class Services:
     def getChamados(self):
 
         chamados = []
+        i=0
 
         for equipment in self.equipments:
+            i = i+1
+            print(f'Requeridos {i} chamados de 100')
             res = requests.request('GET', f"{self.baseApiEndpoint}/api/v2/chamado/?equipamento_id={equipment['id']}", headers=self.header).json()
             for chamado in res['results']:
                     chamado['equipment_id'] = equipment['id']
+                    chamado['proprietario_nome'] = equipment['proprietario']['nome']
+                    chamado['proprietario_apelido'] = equipment['proprietario']['apelido']
                     chamados.append(chamado)
         return chamados
 
     def saveCompanies(self):
 
-        inDatabaseCompanies = Company.objects.all().values_list('id', flat=True)
-
         for company in self.companyDetail:
-            if company['id'] not in inDatabaseCompanies:
+            if company['id'] not in self.inDatabaseCompanies:
                 Company.objects.create(
 
                     id=company['id'],
@@ -147,11 +159,10 @@ class Services:
                 )
 
     def saveEquipments(self):
-
-         inDatabaseEquipments = Equipment.objects.all().values_list('id', flat=True)
+         
 
          for equipment in self.equipments:
-            if equipment['id'] not in inDatabaseEquipments:
+            if equipment['id'] not in self.inDatabaseEquipments:
                 Equipment.objects.create(
                     id=equipment['id'],
                     fabricante=equipment['fabricante'],
@@ -163,15 +174,15 @@ class Services:
     
     def saveChamados(self):
 
-         inDatabaseChamados = Chamado.objects.all().values_list('id', flat=True)
-
          for chamado in self.chamados:
-            if chamado['id'] not in inDatabaseChamados:
+            if chamado['id'] not in self.inDatabaseChamados:
                 Chamado.objects.create(
                     id=chamado['id'],
                     numero=chamado['numero'],
                     equipamento_id=chamado['equipment_id'],
-                    responsavel_str=chamado['responsavel_str']
+                    responsavel_str=chamado['responsavel_str'],
+                    proprietario_nome = chamado['proprietario_nome'],
+                    proprietario_apelido = chamado['proprietario_apelido']
                 )
 
                 

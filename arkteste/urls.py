@@ -13,8 +13,8 @@ router.register('chamados', ChamadoViewSet, basename="Chamados")
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('load', views.testview),
-    path('home', views.homeview),
-    path('',include(router.urls)),
-    path('companies/<int:pk>/equipments/', CompanyEquipmentsViewSet.as_view()),
-    path('equipments/<int:pk>/chamados/', EquipmentChamadosViewSet.as_view()),
+    path('', views.homeview),
+    path('api/',include(router.urls)),
+    path('api/companies/<int:pk>/equipments/', CompanyEquipmentsViewSet.as_view()),
+    path('api/equipments/<int:pk>/chamados/', EquipmentChamadosViewSet.as_view()),
 ]

@@ -45,7 +45,8 @@ class Chamado(models.Model):
     numero = models.IntegerField(null=True)
     equipamento_id = models.IntegerField()
     responsavel_str = models.CharField(max_length=100, null=True)
-    
+    proprietario_nome = models.CharField(max_length=50, null=True)
+    proprietario_apelido = models.CharField(max_length=50, null=True)    
    
 
     def __str__(self):
