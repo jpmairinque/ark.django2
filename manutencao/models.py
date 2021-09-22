@@ -26,6 +26,7 @@ class Company(models.Model):
     bairro = CharField(max_length=50, null=True)
     cidade = CharField(max_length=50, null=True)
     estado = CharField(max_length=50, null=True)
+    qtequipments = models.IntegerField(null=True)
 
 class Equipment(models.Model):
     id = models.PositiveIntegerField(primary_key=True, editable=False)
@@ -34,9 +35,8 @@ class Equipment(models.Model):
     patrimonio = models.CharField(max_length=100, null=True)
     numero_serie = models.CharField(max_length=100, null=True)
     proprietario = models.CharField(max_length=100, null=True)
-    
+    qtchamados = models.IntegerField(null=True)
    
-
     def __str__(self):
         return self.modelo
 

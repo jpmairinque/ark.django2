@@ -89,7 +89,8 @@ class Services:
             i = i+1
             print(f'Requeridos {i} equipamentos de 500')
             res = requests.request('GET', f"{self.baseApiEndpoint}/api/v2/equipamentos_paginados/?empresa_id={company['id']}", headers=self.header).json()
-            for equipment in res['results']:
+            company['count_equipments'] = res['count']
+            for equipment in res['results']:                
                 equipments.append(equipment)
                
               
@@ -122,7 +123,8 @@ class Services:
             i = i+1
             print(f'Requeridos {i} chamados de 100')
             res = requests.request('GET', f"{self.baseApiEndpoint}/api/v2/chamado/?equipamento_id={equipment['id']}", headers=self.header).json()
-            for chamado in res['results']:
+            equipment['count_chamados'] = res['count']
+            for chamado in res['results']:                   
                     chamado['equipment_id'] = equipment['id']
                     chamado['proprietario_nome'] = equipment['proprietario']['nome']
                     chamado['proprietario_apelido'] = equipment['proprietario']['apelido']
@@ -155,6 +157,7 @@ class Services:
                     bairro=company['bairro'],
                     cidade=company['cidade'],
                     estado=company['estado'],
+                    qtequipments=company['count_equipments']
 
                 )
 
@@ -169,7 +172,8 @@ class Services:
                     modelo=equipment['modelo'],
                     patrimonio=equipment['patrimonio'],
                     numero_serie=equipment['numero_serie'],
-                    proprietario=equipment['proprietario']['id']
+                    proprietario=equipment['proprietario']['id'],
+                    qtchamados=equipment['count_chamados']
                 )
     
     def saveChamados(self):
