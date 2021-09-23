@@ -6,15 +6,13 @@ from manutencao.views import CompanyViewSet, EquipmentViewSet, CompanyEquipments
 
 router = routers.DefaultRouter()
 
-router.register('companies', CompanyViewSet, basename="Companies")
-router.register('equipments', EquipmentViewSet, basename="Equipments")
-router.register('chamados', ChamadoViewSet, basename="Chamados")
+router.register('api/companies', CompanyViewSet, basename="Companies")
+router.register('api/equipments', EquipmentViewSet, basename="Equipments")
+router.register('api/chamados', ChamadoViewSet, basename="Chamados")
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('load', views.testview),
-    path('', views.homeview),
-    path('api/',include(router.urls)),
+    path('admin/', admin.site.urls),    
+    path('',include(router.urls)),
     path('api/companies/<int:pk>/equipments/', CompanyEquipmentsViewSet.as_view()),
     path('api/equipments/<int:pk>/chamados/', EquipmentChamadosViewSet.as_view()),
 ]
