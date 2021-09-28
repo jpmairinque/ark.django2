@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand, CommandError
 import requests
 from manutencao.models import Chamado, Company, Equipment
-
+from datetime import datetime
+import math
 class Command(BaseCommand):
 
     help = 'Fetching and saving to DB'
@@ -36,6 +37,7 @@ class Command(BaseCommand):
 
 
     def getAllCompanies(self):
+        
  
         res = requests.request('GET', f'{self.baseApiEndpoint}/api/v2/empresa/', headers=self.header).json()[500:520]
         
@@ -49,12 +51,11 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('[Baixando empresas detalhadas]'))
 
         companyDetail = []
-        i=0
-        for company in allCompanies:
-            self.stdout.write(self.style.SUCCESS(f'[{i} empresas baixadas]'))
-            i=i+1            
-            res = requests.request('GET', f"{self.baseApiEndpoint}/api/v2/company/{company['id']}", headers=self.header).json()
-            companyDetail.append(res)
+        for index,company in enumerate(allCompanies):
+            if company['id'] not in self.inDatabaseCompanies:
+                self.stdout.write(self.style.SUCCESS(f'[{index} empresas baixadas]'))                     
+                res = requests.request('GET', f"{self.baseApiEndpoint}/api/v2/company/{company['id']}", headers=self.header).json()
+                companyDetail.append(res)
 
         def checkType(company):
             if company['tipo'] == 5:
@@ -64,7 +65,7 @@ class Command(BaseCommand):
 
         filtredRes = list(filter(checkType, companyDetail))
 
-        self.stdout.write(self.style.SUCCESS(f'[{i} empresas baixadas]'))
+        
    
         return filtredRes
 
@@ -72,11 +73,10 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS('[Baixando equipamentos]'))
         equipments = []
-        i=0
+        
 
-        for company in companyDetail:
-            self.stdout.write(self.style.SUCCESS(f'[{i} equipamentos baixados]'))
-            i = i+1            
+        for index,company in enumerate(companyDetail):
+            self.stdout.write(self.style.SUCCESS(f'[{index} equipamentos baixados]'))            
             res = requests.request('GET', f"{self.baseApiEndpoint}/api/v2/equipamentos_paginados/?empresa_id={company['id']}", headers=self.header).json()
             company['count_equipments'] = res['count']
             for equipment in res['results']:                
@@ -89,6 +89,8 @@ class Command(BaseCommand):
     def postChamado(self, allEquipments):
         self.stdout.write(self.style.SUCCESS('[Registrando chamados]'))
 
+        nowStamp = str(math.trunc(datetime.now().timestamp()))
+
         for equipment in allEquipments:
 
             data = {
@@ -97,7 +99,7 @@ class Command(BaseCommand):
                 "tipo_servico": 3, 
                 "problema": 5,
                 "observacoes": "texto gerado aleatoriamente com até 100 palavras", 
-                "data_criacao": "1595446943974", 
+                "data_criacao": nowStamp, 
                 "id_tipo_ordem_servico": 1
             }
             res = requests.request('POST',
@@ -109,11 +111,10 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS('[Baixando chamados]'))
         chamados = []
-        i=0
+       
 
-        for equipment in allEquipments:
-            self.stdout.write(self.style.SUCCESS(f'[{i} chamados baixados]'))
-            i = i+1            
+        for index,equipment in enumerate(allEquipments):
+            self.stdout.write(self.style.SUCCESS(f'[{index} chamados baixados]'))                      
             res = requests.request('GET', f"{self.baseApiEndpoint}/api/v2/chamado/?equipamento_id={equipment['id']}", headers=self.header).json()
             equipment['count_chamados'] = res['count']
             for chamado in res['results']:                   
@@ -129,8 +130,7 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS('[Salvando empresas no BD]'))
 
-        for company in companyDetail:
-            if company['id'] not in self.inDatabaseCompanies:
+        for company in companyDetail:            
                 Company.objects.create(
 
                     id=company['id'],
