@@ -4,26 +4,51 @@ Este projeto realiza um processo de consumo e criação de API Rest (por meio do
 
 O repositório atual é correspondente apenas ao _back-end_ do projeto. Para acessar e clonar o _front-end_ (em ReactJS), clique aqui
 
-## Rodando o _back-end_
+## Executando o _back-end_
 
 - Primeiramente, instale as dependências/requisitos do projeto
 
-`pip install -r requirements.txt`
+```
+pip install -r requirements.txt
+```
 
 - Em seguida, migre os models do projeto
 
-`python manage.py migrate`
+```
+python manage.py migrate
+```
 
 - Para concluir, execute o script de captação de dados do projeto
 
-`python manage.py scriptmanutencao`
+```
+python manage.py scriptmanutencao
+```
 
 _**OBS**: para o funcionamento do projeto, é fundamental que tanto o _front_ quanto o _back-end_ estejam rodando nas seguintes portas:_
 
-React:   `http://localhost:3000/`
+React:   
+```
+http://localhost:3000/
+```
 
-Django:   `http://localhost:8000/`
+Django:   
+```
+http://localhost:8000/
+```
 
-## Rodando o _front-end_
+## Executando o _front-end_
+
+- Primeiramente, instale as dependências do projeto 
+
+```
+npm install || yarn install
+```
+
+- Em seguida, apenas execute-o
+
+```
+npm start || yarn start
+```
+_**OBS**: se atente na execução do servidor backend antes do React, já que este é dependente da api do Django_
 
 
