@@ -13,7 +13,7 @@ O repositório atual é correspondente apenas ao _back-end_ do projeto. Para ace
 
 
 
-## Executando o _back-end_
+## Executando o _back-end_ 💿🎲
 
 - Primeiramente, instale as dependências/requisitos do projeto
 
@@ -45,7 +45,7 @@ Django:
 http://localhost:8000/
 ```
 
-## Executando o _front-end_
+## Executando o _front-end_ 💿📱
 
 - Primeiramente, instale as dependências do projeto 
 
@@ -59,5 +59,16 @@ npm install || yarn install
 npm start || yarn start
 ```
 _**OBS**: se atente na execução do servidor backend antes do React, já que este é dependente da api do Django_
+
+## Ferramentas utilizadas 🛠
+
+- Django 2.2.24
+- Django Rest Framework
+- Python 3
+- ReactJS
+- Styled Components
+- Fetch API
+
+
 
 
