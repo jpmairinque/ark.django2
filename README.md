@@ -14,25 +14,33 @@ _// The current repository relates only to the project's back-end code. Click [h
 
 ## Executando o _back-end // Running the back-end_ 💿🎲
 
-- Primeiramente, instale as dependências/requisitos do projeto
+- Primeiramente, instale as dependências/requisitos do projeto _// Install all the dependencies_
 
 ```
 pip install -r requirements.txt
 ```
 
-- Em seguida, migre os models do projeto
+- Em seguida, migre os models do projeto _// Next, migrate all the models_
 
 ```
 python manage.py migrate
 ```
 
-- Para concluir, execute o script de captação de dados do projeto
+- Depois, execute o script de captação de dados do projeto _// Next, run the project's main script_
 
 ```
 python manage.py scriptmanutencao
 ```
 
+- Por fim, execute o servidor _// Finally, run the server_
+
+```
+python manage.py runserver
+```
+
 _**OBS**: para o funcionamento do projeto, é fundamental que tanto o _front_ quanto o _back-end_ estejam rodando nas seguintes portas:_
+
+_Make sure the servers are running on the right ports:_
 
 React:   
 ```
@@ -46,20 +54,22 @@ http://localhost:8000/
 
 ## Executando o _front-end // Running the front-end_ 💿📱
 
-- Primeiramente, instale as dependências do projeto 
+- Primeiramente, instale as dependências do projeto _// Install all the dependencies_
 
 ```
 npm install || yarn install
 ```
 
-- Em seguida, apenas execute-o
+- Em seguida, apenas execute-o  _// Next, simply run the project_
 
 ```
 npm start || yarn start
 ```
 _**OBS**: se atente na execução do servidor backend antes do React, já que este é dependente da api do Django_
 
-## Ferramentas utilizadas 🛠
+_Make sure to run Django's server before React's, since the front-end code depends on the API_
+
+## Ferramentas utilizadas _// Tools used_ 🛠
 
 - Django 2.2.24
 - Django Rest Framework
