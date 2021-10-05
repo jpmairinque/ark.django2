@@ -6,14 +6,13 @@
 
 Este projeto realiza um processo de consumo e criação de API Rest (por meio do Django Rest Framework) para organizar dados de empresas, equipamentos e chamados presentes em uma infraestrutura de software de manutenção e gestão dos mesmos.
 
+_// This project runs a process of Rest APIs consumption and creation that organizes data from companies, equipments and order tickets in a software maintenance infrastructure._
+
 O repositório atual é correspondente apenas ao _back-end_ do projeto. Para acessar e clonar o _front-end_ (em ReactJS), clique [aqui](https://github.com/jpmairinque/ark.reactjs).
 
+_// The current repository relates only to the project's back-end code. Click [here](https://github.com/jpmairinque/ark.reactjs) to acces and clone the front-end code_
 
-
-
-
-
-## Executando o _back-end_ 💿🎲
+## Executando o _back-end // Running the back-end_ 💿🎲
 
 - Primeiramente, instale as dependências/requisitos do projeto
 
@@ -45,7 +44,7 @@ Django:
 http://localhost:8000/
 ```
 
-## Executando o _front-end_ 💿📱
+## Executando o _front-end // Running the back-end_ 💿📱
 
 - Primeiramente, instale as dependências do projeto 
 
