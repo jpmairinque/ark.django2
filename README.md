@@ -44,7 +44,7 @@ Django:
 http://localhost:8000/
 ```
 
-## Executando o _front-end // Running the back-end_ 💿📱
+## Executando o _front-end // Running the front-end_ 💿📱
 
 - Primeiramente, instale as dependências do projeto 
 
