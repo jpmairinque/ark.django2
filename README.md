@@ -10,7 +10,7 @@ _// This project runs a process of Rest APIs consumption and creation that organ
 
 O repositório atual é correspondente apenas ao _back-end_ do projeto. Para acessar e clonar o _front-end_ (em ReactJS), clique [aqui](https://github.com/jpmairinque/ark.reactjs).
 
-_// The current repository relates only to the project's back-end code. Click [here](https://github.com/jpmairinque/ark.reactjs) to acces and clone the front-end code_
+_// The current repository relates only to the project's back-end code. Click [here](https://github.com/jpmairinque/ark.reactjs) to access and clone the front-end code_
 
 ## Executando o _back-end // Running the back-end_ 💿🎲
 
