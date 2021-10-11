@@ -54,7 +54,7 @@ http://localhost:8000/
 
 ## Executando o _front-end // Running the front-end_ 💿📱
 
-- Primeiramente, instale as dependências do projeto _// Install all the dependencies_
+- Primeiramente, instale todas as dependências do projeto _// Install all the dependencies_
 
 ```
 npm install || yarn install
