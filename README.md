@@ -71,7 +71,7 @@ _Make sure to run Django's server before React's, since the front-end code depen
 
 ## Ferramentas utilizadas _// Tools used_ 🛠
 
-- Django 2.2.24
+- Django 2.2
 - Django Rest Framework
 - Python 3
 - ReactJS
